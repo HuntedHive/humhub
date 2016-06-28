@@ -1,3 +1,11 @@
+[deprecated]
+============
+This fork is for archive purposes only.
+
+---------------
+
+
+
 Welcome to HumHub 
 =================
 
