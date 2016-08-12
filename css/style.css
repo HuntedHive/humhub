@@ -202,6 +202,40 @@ textarea {
   top: 14px;
   left: 14px;
 }
+
+/* Message */
+#topbar-first .notifications #dropdown-messages {
+  width: 350px;
+  margin-left: -148px;
+}
+#topbar-first .notifications #dropdown-messages ul.media-list {
+  max-height: 400px;
+  overflow: auto;
+}
+#topbar-first .notifications #dropdown-messages li {
+  position: relative;
+}
+#topbar-first .notifications #dropdown-messages li i.approval {
+  position: absolute;
+  left: 2px;
+  top: 36px;
+  font-size: 14px;
+}
+#topbar-first .notifications #dropdown-messages li i.accepted {
+  color: #5cb85c;
+}
+#topbar-first .notifications #dropdown-messages li i.declined {
+  color: #d9534f;
+}
+#topbar-first .notifications #dropdown-messages li .media {
+  position: relative;
+}
+#topbar-first .notifications #dropdown-messages li .media .img-space {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+}
+
 #topbar-first .dropdown-footer {
   margin: 10px 10px 5px 10px;
 }
