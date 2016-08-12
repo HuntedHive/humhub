@@ -1,0 +1,117 @@
+<?php
+
+namespace humhub\modules\user\controllers;
+
+use humhub\components\Controller;
+use humhub\modules\user\models\Password;
+use humhub\modules\user\models\User;
+use Yii;
+
+class BuildController extends Controller
+{
+    private $TOKEN = 'fc6d59bf-b48f-42db-94c0-714bf8248173';
+
+    public function beforeAction($action)
+    {
+        \Yii::$app->controller->enableCsrfValidation = false;
+        return parent::beforeAction($action);
+    }
+
+    public function actionCreateAccount()
+    {
+        $this->forcePostRequest();
+        $post = \Yii::$app->request->post();
+        if(!isset($post['token']) || $this->TOKEN != $post['token']) {
+            throw new \yii\web\HttpException(400, 'Invalid data');
+        }
+        $curUser = User::find()->andWhere(['username' => $post['User']['username']])->one();
+        if(!empty($curUser)) {
+            return "Isset User";
+        }
+
+        $userModel = new User();
+        $userModel->scenario = 'registration';
+        $userPasswordModel = new Password();
+        $userPasswordModel->scenario = 'registration';
+        $profileModel = $userModel->profile;
+        $profileModel->scenario = 'registration';
+
+        // Build Form Definition
+        $definition = array();
+        $definition['elements'] = array();
+
+        // Add User Form
+        $definition['elements']['User'] = array(
+            'type' => 'form',
+            'elements' => array(
+                'username' => array(
+                    'type' => 'text',
+                    'class' => 'form-control',
+                    'maxlength' => 25,
+                ),
+                'email' => array(
+                    'type' => 'text',
+                    'class' => 'form-control',
+                    'maxlength' => 100,
+                )
+            ),
+        );
+
+        // Add User Password Form
+        $definition['elements']['Password'] = array(
+            'type' => 'form',
+            'elements' => array(
+                'newPassword' => array(
+                    'type' => 'password',
+                    'class' => 'form-control',
+                    'maxlength' => 255,
+                ),
+                'newPasswordConfirm' => array(
+                    'type' => 'password',
+                    'class' => 'form-control',
+                    'maxlength' => 255,
+                ),
+            ),
+        );
+
+        // Add Profile Form
+        $definition['elements']['Profile'] = array_merge(array('type' => 'form'), $profileModel->getFormDefinition());
+
+        // Get Form Definition
+        $definition['buttons'] = array(
+            'save' => array(
+                'type' => 'submit',
+                'class' => 'btn btn-primary',
+                'label' => Yii::t('InstallerModule.controllers_ConfigController', 'Create Admin Account'),
+            ),
+        );
+        
+        $form = new \humhub\compat\HForm($definition);
+        $form->models['User'] = $userModel;
+        $form->models['User']->group_id = 1;
+        $form->models['Password'] = $userPasswordModel;
+        $form->models['Profile'] = $profileModel;
+        if ($form->submitted() && $form->validate()) {
+            $form->models['User']->status = User::STATUS_ENABLED;
+            $form->models['User']->super_admin = true;
+            $form->models['User']->language = '';
+            $form->models['User']->tags = 'Administration, Support, HumHub';
+            $form->models['User']->last_activity_email = new \yii\db\Expression('NOW()');
+            $form->models['User']->save();
+
+            $form->models['Profile']->user_id = $form->models['User']->id;
+            $form->models['Profile']->title = "System Administration";
+            $form->models['Profile']->save();
+
+            // Save User Password
+            $form->models['Password']->user_id = $form->models['User']->id;
+            $form->models['Password']->setPassword($form->models['Password']->newPassword);
+            $form->models['Password']->save();
+
+            $userId = $form->models['User']->id;
+
+            // Switch Identity
+            Yii::$app->user->switchIdentity($form->models['User']);
+        }
+    }
+}
