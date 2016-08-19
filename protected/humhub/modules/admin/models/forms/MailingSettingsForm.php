@@ -20,7 +20,9 @@ class MailingSettingsForm extends \yii\base\Model
     public $port;
     public $encryption;
     public $allowSelfSignedCerts;
-
+    public $domain;
+    public $key;
+    public $class = 'boundstate\mailgun\Mailer';
     /**
      * Declares the validation rules.
      */
@@ -28,12 +30,12 @@ class MailingSettingsForm extends \yii\base\Model
     {
         return array(
             array(['transportType', 'systemEmailAddress', 'systemEmailName'], 'required'),
-            array('transportType', 'in', 'range' => array('php', 'smtp', 'file')),
+            array('transportType', 'in', 'range' => array('php', 'smtp', 'file', 'mailgun')),
             array('encryption', 'in', 'range' => array('', 'ssl', 'tls')),
             array('allowSelfSignedCerts', 'boolean'),
             array('systemEmailAddress', 'email'),
             array('port', 'integer', 'min' => 1, 'max' => 65535),
-            array(['transportType', 'hostname', 'username', 'password', 'encryption', 'allowSelfSignedCerts', 'systemEmailAddress', 'systemEmailName'], 'string', 'max' => 255),
+            array(['class', 'key', 'domain', 'transportType', 'hostname', 'username', 'password', 'encryption', 'allowSelfSignedCerts', 'systemEmailAddress', 'systemEmailName'], 'string', 'max' => 255),
         );
     }
 

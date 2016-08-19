@@ -203,6 +203,11 @@ class DynamicConfig extends \yii\base\Object
              */
         } elseif (Setting::Get('transportType', 'mailing') == 'php') {
             $mail['transport']['class'] = 'Swift_MailTransport';
+        } elseif (Setting::Get('transportType', 'mailing') == 'mailgun') {
+            $mail = [];
+            $mail['class'] = Setting::Get('class', 'mailing');
+            $mail['key'] = Setting::Get('key', 'mailing');
+            $mail['domain'] = Setting::Get('domain', 'mailing');
         } else {
             $mail['useFileTransport'] = true;
         }

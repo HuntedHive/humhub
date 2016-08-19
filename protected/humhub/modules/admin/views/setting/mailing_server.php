@@ -41,7 +41,7 @@ use yii\helpers\Url;
             <?php echo $form->dropDownList($model, 'transportType', $transportTypes, array('class' => 'form-control', 'readonly' => Setting::IsFixed('transportType', 'mailing'))); ?>
         </div>
 
-        <div id="smtpOptions">
+        <div id="smtpOptions"
             <hr>
             <h4> <?php echo Yii::t('AdminModule.views_setting_mailing_server', 'SMTP Options'); ?> </h4>
 
@@ -82,6 +82,21 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+
+        <div id="mailgunOptions">
+            <hr>
+            <h4> <?php echo Yii::t('AdminModule.views_setting_mailing_server', 'Mailgun Options'); ?> </h4>
+
+            <div class="form-group">
+                <?php echo $form->labelEx($model, 'domain'); ?>
+                <?php echo $form->textField($model, 'domain', array('class' => 'form-control')); ?>
+            </div>
+
+            <div class="form-group">
+                <?php echo $form->labelEx($model, 'key'); ?>
+                <?php echo $form->textField($model, 'key', array('class' => 'form-control')); ?>
+            </div>
+        </div>
         <hr>
         <?php echo CHtml::submitButton(Yii::t('AdminModule.views_setting_mailing_server', 'Save'), array('class' => 'btn btn-primary')); ?>
 
@@ -102,6 +117,18 @@ use yii\helpers\Url;
             $("#smtpOptions").hide();
         } else {
             $("#smtpOptions").show();
+        }
+    });
+
+    if ($("#mailingsettingsform-transporttype option:selected").val() != 'mailgun') {
+        $("#mailgunOptions").hide();
+    }
+
+    $('#mailingsettingsform-transporttype').on('change', function () {
+        if ($("#mailingsettingsform-transporttype option:selected").val() != 'mailgun') {
+            $("#mailgunOptions").hide();
+        } else {
+            $("#mailgunOptions").show();
         }
     });
 

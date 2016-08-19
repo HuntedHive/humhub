@@ -293,6 +293,11 @@ class SettingController extends Controller
         $form->transportType = Setting::Get('transportType', 'mailing');
         $form->hostname = Setting::Get('hostname', 'mailing');
         $form->username = Setting::Get('username', 'mailing');
+
+        $form->key = Setting::Get('key', 'mailing');
+        $form->domain = Setting::Get('domain', 'mailing');
+        $form->class = Setting::Get('class', 'mailing');
+
         if (Setting::Get('password', 'mailing') != '')
             $form->password = '---invisible---';
 
@@ -304,6 +309,11 @@ class SettingController extends Controller
 
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $form->class = 'boundstate\mailgun\Mailer';
+            $form->key = Setting::Set('key', $form->key, 'mailing');
+            $form->domain = Setting::Set('domain', $form->domain, 'mailing');
+            $form->class = Setting::Set('class', $form->class, 'mailing');
+
             $form->transportType = Setting::Set('transportType', $form->transportType, 'mailing');
             $form->hostname = Setting::Set('hostname', $form->hostname, 'mailing');
             $form->username = Setting::Set('username', $form->username, 'mailing');
@@ -324,9 +334,9 @@ class SettingController extends Controller
         }
 
         $encryptionTypes = array('' => 'None', 'ssl' => 'SSL', 'tls' => 'TLS');
-        $transportTypes = array('file' => 'File (Use for testing/development)', 'php' => 'PHP', 'smtp' => 'SMTP');
+        $transportTypes = array('file' => 'File (Use for testing/development)', 'php' => 'PHP', 'smtp' => 'SMTP', 'mailgun' => 'Mailgun');
 
-        return $this->render('mailing_server', array('model' => $form, 'encryptionTypes' => $encryptionTypes, 'transportTypes' => $transportTypes));
+        return $this->render('mailing_server', array('model' => $form,'encryptionTypes' => $encryptionTypes, 'transportTypes' => $transportTypes));
     }
 
     /**
