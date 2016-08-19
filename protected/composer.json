@@ -1,0 +1,5 @@
+{
+    "require": {
+        "boundstate/yii2-mailgun": "*"
+    }
+}
