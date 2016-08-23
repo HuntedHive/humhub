@@ -59,19 +59,19 @@
         "yii\\composer\\Installer::postCreateProject": {
             "setPermission": [
                 {
-                    "protected/runtime": "0777",
-                    "assets": "0777",
-                    "protected/yii": "0755",
-                    "protected/modules": "0755"
+                    "runtime": "0777",
+                    "../assets": "0777",
+                    "yii": "0755",
+                    "modules": "0755"
                 }
             ],
             "generateCookieValidationKey": [
-                "protected/config/web.php"
+                "config/web.php"
             ]
         },
         "asset-installer-paths": {
-            "npm-asset-library": "protected/vendor/npm",
-            "bower-asset-library": "protected/vendor/bower"
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
         }
     }
 }
