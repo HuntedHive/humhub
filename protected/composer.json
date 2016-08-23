@@ -47,7 +47,7 @@
     },
     "config": {
         "process-timeout": 1800,
-        "vendor-dir": "protected/vendor"
+        "vendor-dir": "vendor"
     },
     "scripts": {
         "post-create-project-cmd": [
