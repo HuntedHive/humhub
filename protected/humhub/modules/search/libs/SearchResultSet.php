@@ -27,11 +27,13 @@ class SearchResultSet
 
         foreach ($this->results as $result) {
             $modelClass = $result->model;
-            $instance = $modelClass::findOne(['id' => $result->pk]);
-            if ($instance !== null) {
-                $instances[] = $instance;
-            } else {
-                \Yii::error('Could not load search result ' . $result->model . " - " . $result->pk);
+            if(class_exists($modelClass)) {
+                $instance = $modelClass::findOne(['id' => $result->pk]);
+                if ($instance !== null) {
+                    $instances[] = $instance;
+                } else {
+                    \Yii::error('Could not load search result ' . $result->model . " - " . $result->pk);
+                }
             }
         }
 
