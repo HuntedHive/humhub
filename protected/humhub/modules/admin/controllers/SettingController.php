@@ -295,6 +295,7 @@ class SettingController extends Controller
         $form->username = Setting::Get('username', 'mailing');
 
         $form->key = Setting::Get('key', 'mailing');
+        $form->debug = Setting::Get('debug', 'mailing');
         $form->domain = Setting::Get('domain', 'mailing');
         $form->class = Setting::Get('class', 'mailing');
 
@@ -309,8 +310,9 @@ class SettingController extends Controller
 
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $form->class = 'boundstate\mailgun\Mailer';
+            $form->class = 'humhub\widgets\MailgunWidget';
             $form->key = Setting::Set('key', $form->key, 'mailing');
+            $form->debug = Setting::Set('debug', $form->debug, 'mailing');
             $form->domain = Setting::Set('domain', $form->domain, 'mailing');
             $form->class = Setting::Set('class', $form->class, 'mailing');
 
