@@ -208,6 +208,7 @@ class DynamicConfig extends \yii\base\Object
             $mail['class'] = Setting::Get('class', 'mailing');
             $mail['key'] = Setting::Get('key', 'mailing');
             $mail['domain'] = Setting::Get('domain', 'mailing');
+            $mail['debug'] = (int) Setting::Get('debug', 'mailing');
         } else {
             $mail['useFileTransport'] = true;
         }
