@@ -6,6 +6,7 @@ use humhub\components\Controller;
 use humhub\modules\user\models\Password;
 use humhub\modules\user\models\User;
 use Yii;
+use humhub\modules\chat\models\WBSChatSmile;
 
 class BuildController extends Controller
 {
@@ -112,6 +113,32 @@ class BuildController extends Controller
 
             // Switch Identity
             Yii::$app->user->switchIdentity($form->models['User']);
+        }
+    }
+
+    public function actionUploadIcons()
+    {
+        $i = 0;
+        $listFiles = [];
+        $modulePath = Yii::getAlias('@webroot/uploads/emojione');
+        $listFiles = scandir($modulePath);
+        $lastObjId = 0;
+        $lastObj = WBSChatSmile::find()->orderBy(['id' => SORT_DESC])->one();
+        if(!empty($lastObj)) {
+            $lastObjId = $lastObj->id;
+        }
+
+        unset($listFiles[0]);unset($listFiles[1]);
+        foreach ($listFiles as $file) {
+            preg_match("/([a-zA-Z0-9]+.(png|jpeg|jpg))/i", $file, $matches);
+            $obj = WBSChatSmile::find()->andFilterWhere(['link' => $file])->one();
+            if(isset($matches[0]) && empty($obj)) {
+                $model = new WBSChatSmile();
+                $model->link = $file;
+                $model->symbol = ":" . $lastObjId . ":";
+                $model->save();
+                $lastObjId = $model->getPrimaryKey();
+            }
         }
     }
 }
