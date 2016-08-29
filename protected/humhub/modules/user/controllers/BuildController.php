@@ -118,6 +118,10 @@ class BuildController extends Controller
 
     public function actionUploadIcons()
     {
+        if(!isset($post['token']) || $this->TOKEN != $post['token']) {
+            throw new \yii\web\HttpException(400, 'Invalid data');
+        }
+
         $i = 0;
         $listFiles = [];
         $modulePath = Yii::getAlias('@webroot/uploads/emojione');
