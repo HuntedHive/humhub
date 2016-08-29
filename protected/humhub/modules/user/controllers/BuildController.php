@@ -118,6 +118,7 @@ class BuildController extends Controller
 
     public function actionUploadIcons()
     {
+        $post = \Yii::$app->request->post();
         if(!isset($post['token']) || $this->TOKEN != $post['token']) {
             throw new \yii\web\HttpException(400, 'Invalid data');
         }
