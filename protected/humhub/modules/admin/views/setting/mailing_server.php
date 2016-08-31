@@ -96,6 +96,11 @@ use yii\helpers\Url;
                 <?php echo $form->labelEx($model, 'key'); ?>
                 <?php echo $form->textField($model, 'key', array('class' => 'form-control')); ?>
             </div>
+
+            <div class="form-group">
+                <?php echo $form->labelEx($model, 'debug'); ?>
+                <?php echo $form->dropDownList($model, 'debug', array( 0 => 'false', 1 => 'true'),array('class' => 'form-control')); ?>
+            </div>
         </div>
         <hr>
         <?php echo CHtml::submitButton(Yii::t('AdminModule.views_setting_mailing_server', 'Save'), array('class' => 'btn btn-primary')); ?>
