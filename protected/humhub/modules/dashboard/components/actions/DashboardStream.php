@@ -17,7 +17,8 @@ use Yii;
  * @since 0.11
  * @author luke
  */
-class DashboardStream extends \humhub\modules\content\components\actions\Stream
+// class DashboardStream extends \humhub\modules\content\components\actions\Stream - default STREAM
+class DashboardStream extends \humhub\modules\content\components\actions\TeachconnectSteam // teachconnect STREAM
 {
 
     /**
@@ -26,7 +27,6 @@ class DashboardStream extends \humhub\modules\content\components\actions\Stream
     public function init()
     {
         parent::init();
-
         if ($this->user == null) {
 
             /**
