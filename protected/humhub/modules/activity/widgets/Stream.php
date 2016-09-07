@@ -55,7 +55,7 @@ class Stream extends \yii\base\Widget
     protected function getStreamUrl()
     {
         $params = array(
-            'limit' => '10',
+            'limit' => '40',
             'from' => '-from-',
             'mode' => \humhub\modules\content\components\actions\Stream::MODE_ACTIVITY
         );
