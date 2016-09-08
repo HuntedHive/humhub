@@ -31,7 +31,8 @@ use yii\helpers\Html;
                     ],
                     'link' => 'true',
                     'linkOptions' => [
-                        'class' => 'tt',
+                        'class' => 'tt pull-left',
+                        'style' => 'margin-right:5px;text-align:center;',
                         'data-toggle' => 'tooltip',
                         'data-placement' => 'top',
                         'title' => Html::encode($space->name),
