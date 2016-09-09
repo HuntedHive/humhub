@@ -73,6 +73,7 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
             
             [['name'], 'required'],
             [['description', 'tags', 'color'], 'string'],
+            [['name', 'description'], 'string', 'max' => 255],
             [['created_at', 'updated_at'], 'safe'],
             [['join_policy'], 'in', 'range' => [0, 1, 2]],
             [['visibility'], 'in', 'range' => [0, 1, 2]],
