@@ -30,11 +30,11 @@ class TimeAgo extends \yii\base\Widget
     {
         parent::init();
 
-        // Make sure we get an timestamp in server tz
-        if (is_numeric($this->timestamp)) {
-            $this->timestamp = date('Y-m-d H:i:s', $this->timestamp);
-        }
-        $this->timestamp = strtotime($this->timestamp);
+//        // Make sure we get an timestamp in server tz
+//        if (is_numeric($this->timestamp)) {
+//            $this->timestamp = date('Y-m-d H:i:s', $this->timestamp);
+//        }
+//        $this->timestamp = strtotime($this->timestamp);
     }
 
     /**
@@ -42,11 +42,11 @@ class TimeAgo extends \yii\base\Widget
      */
     public function run()
     {
-        $elapsed = time() - $this->timestamp;
+//        $elapsed = time() - $this->timestamp;
 
-        if (Yii::$app->params['formatter']['timeAgoBefore'] !== false && $elapsed >= Yii::$app->params['formatter']['timeAgoBefore']) {
-            return $this->renderDateTime($elapsed);
-        }
+//        if (Yii::$app->params['formatter']['timeAgoBefore'] !== false && $elapsed >= Yii::$app->params['formatter']['timeAgoBefore']) {
+//            return $this->renderDateTime($elapsed);
+//        }
 
         return $this->renderTimeAgo();
     }
@@ -64,10 +64,14 @@ class TimeAgo extends \yii\base\Widget
         }
 
         // Convert timestamp to ISO 8601
-        $this->timestamp = date("c", $this->timestamp);
+        $timezone = empty(Yii::$app->user->identity->time_zone)?Yii::$app->timeZone:Yii::$app->user->identity->time_zone;
+        $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $this->timestamp, new \DateTimeZone('UTC'));
+        $datetime->setTimezone(new \DateTimeZone($timezone));
+        $this->timestamp = $datetime->format('Y-m-d H:i:s');
 
         $this->getView()->registerJs('$(".time").timeago();', \yii\web\View::POS_END, 'timeago');
         return '<span class="time" title="' . $this->timestamp . '">' . $this->getFullDateTime() . '</span>';
+
     }
 
     /**
