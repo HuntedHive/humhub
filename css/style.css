@@ -389,9 +389,9 @@ textarea {
   font-size: 13px;
   font-weight: 300;
   max-width: 600px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
 .panel-profile .panel-profile-header .profile-user-photo-container {
   position: absolute;
