@@ -23,6 +23,7 @@ namespace humhub\modules\content\components\actions;
 use humhub\modules\chat\activities\ChatMessage;
 use humhub\modules\comment\activities\NewComment;
 use humhub\modules\content\activities\ContentCreated;
+use humhub\modules\post\models\Post;
 use humhub\modules\questionanswer\activities\Answer;
 use humhub\modules\questionanswer\activities\QAComment;
 use humhub\modules\questionanswer\activities\Question;
@@ -34,6 +35,7 @@ use humhub\modules\content\models\WallEntry;
 use humhub\modules\user\models\User;
 use yii\base\Exception;
 use yii\base\Object;
+use yii\helpers\Html;
 
 /**
  * BaseStreamAction
@@ -292,8 +294,7 @@ class TeachconnectSteam extends \yii\base\Action
                 throw new Exception('Could not get contents underlying object!');
             }
 
-            if(in_array($underlyingObject->class, self::$accessObject) &&
-                self::$countObject[$underlyingObject->class] < self::$maxCountObject[$underlyingObject->class]) {
+            if(Html::encode($_GET['mode']) == 'normal') {
 
                 $underlyingObject->populateRelation('content', $wallEntry->content);
                 $output .= $this->controller->renderAjax('@humhub/modules/content/views/layouts/wallEntry', [
@@ -304,8 +305,24 @@ class TeachconnectSteam extends \yii\base\Action
                     'content' => $underlyingObject->getWallOut()
                 ], true);
 
+            } else {
+                if(in_array($underlyingObject->class, self::$accessObject) &&
+                    self::$countObject[$underlyingObject->class] < self::$maxCountObject[$underlyingObject->class]) {
+
+                        $underlyingObject->populateRelation('content', $wallEntry->content);
+                        $output .= $this->controller->renderAjax('@humhub/modules/content/views/layouts/wallEntry', [
+                        'entry' => $wallEntry,
+                        'user' => $underlyingObject->content->user,
+                        'mode' => $this->mode,
+                        'object' => $underlyingObject,
+                        'content' => $underlyingObject->getWallOut()
+                    ], true);
+
                 self::$countObject[$underlyingObject->class]++;
+                }
             }
+
+
 
             $generatedWallEntryIds[] = $wallEntry->id;
             $lastEntryId = $wallEntry->id;
