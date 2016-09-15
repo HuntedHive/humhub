@@ -184,6 +184,7 @@ class Filesystem extends AbstractFile
      */
     public function lock($lockType, $nonBlockingLock = false)
     {
+        return true;
         if ($nonBlockingLock) {
             return flock($this->_fileHandle, $lockType | LOCK_NB);
         } else {
