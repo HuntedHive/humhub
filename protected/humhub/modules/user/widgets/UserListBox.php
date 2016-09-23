@@ -3,7 +3,7 @@
 /**
  * @link https://www.humhub.org/
  * @copyright Copyright (c) 2016 HumHub GmbH & Co. KG
- * @license https://www.humhub.com/licences
+ * @license https://www.humhub.org/licences
  */
 
 namespace humhub\modules\user\widgets;
