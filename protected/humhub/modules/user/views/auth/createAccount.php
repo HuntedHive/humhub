@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 
 $this->pageTitle = Yii::t('UserModule.views_auth_createAccount', 'Create Account');
+\humhub\assets\TeachConnectAsset::register($this);
 ?>
 
 <div class="container" style="text-align: center;">
