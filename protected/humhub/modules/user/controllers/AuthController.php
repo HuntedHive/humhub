@@ -183,11 +183,16 @@ class AuthController extends Controller
         if ($userInvite->language)
             Yii::$app->language = $userInvite->language;
 
-        $userModel = new User();
+        $userModel = User::find()->andWhere(['email' => $userInvite->email])->one();
+        if($userModel->status == User::STATUS_ENABLED) {
+            throw new HttpException(401, 'Your have already activated account');
+        }
+
+        $userModel->status = User::STATUS_ENABLED;
         $userModel->scenario = 'registration';
         $userModel->email = $userInvite->email;
 
-        $userPasswordModel = new Password();
+        $userPasswordModel = Password::find()->andWhere(['user_id' => $userModel->id])->one();
         $userPasswordModel->scenario = 'registration';
 
         $profileModel = $userModel->profile;
@@ -217,7 +222,7 @@ class AuthController extends Controller
             'title' => Yii::t('UserModule.controllers_AuthController', 'Account'),
             'elements' => array(
                 'username' => array(
-                    'type' => 'text',
+                    'type' => 'hidden',
                     'class' => 'form-control',
                     'maxlength' => 25,
                 ),
@@ -249,7 +254,7 @@ class AuthController extends Controller
         );
 
         // Add Profile Form
-        $definition['elements']['Profile'] = array_merge(array('type' => 'form'), $profileModel->getFormDefinition());
+//        $definition['elements']['Profile'] = array_merge(array('type' => 'form'), $profileModel->getFormDefinition());
 
         // Get Form Definition
         $definition['buttons'] = array(
@@ -264,9 +269,7 @@ class AuthController extends Controller
         $form->models['User'] = $userModel;
         $form->models['UserPassword'] = $userPasswordModel;
         $form->models['Profile'] = $profileModel;
-
         if ($form->submitted('save') && $form->validate()) {
-
             $this->forcePostRequest();
 
             // Registe User
@@ -286,7 +289,7 @@ class AuthController extends Controller
                 // Autologin user
                 if (!$needApproval) {
                     Yii::$app->user->switchIdentity($form->models['User']);
-                    return $this->redirect(Url::to(['/dashboard/dashboard']));
+                    return $this->redirect(Url::to(['/']));
                 }
 
                 return $this->render('createAccount_success', array(
@@ -295,6 +298,7 @@ class AuthController extends Controller
                 ));
             }
         }
+
 
         return $this->render('createAccount', array(
                     'hForm' => $form,
