@@ -284,7 +284,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
             $this->last_activity_email = new \yii\db\Expression('NOW()');
 
             // Set Status
-            if ($this->status == "") {
+            if ($this->status === "") {
                 if (\humhub\models\Setting::Get('needApproval', 'authentication_internal')) {
                     $this->status = User::STATUS_NEED_APPROVAL;
                 } else {
