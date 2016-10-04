@@ -7,7 +7,7 @@ $this->pageTitle = Yii::t('UserModule.views_auth_createAccount', 'Create Account
 ?>
 
 <div class="container" style="text-align: center;">
-    <p><img src="/humhub/themes/humhub-themes-tq/img/logo.png"></p>
+    <p><img src="/themes/humhub-themes-tq/img/logo.png"></p>
     <br/>
     <div class="row">
         <div id="create-account-form" class="panel panel-default animated bounceIn" style="max-width: 500px; margin: 0 auto 20px; text-align: left;">
