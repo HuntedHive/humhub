@@ -219,7 +219,6 @@ class AuthController extends Controller
         // Add User Form
         $definition['elements']['User'] = array(
             'type' => 'form',
-            'title' => Yii::t('UserModule.controllers_AuthController', 'Account'),
             'elements' => array(
                 'username' => array(
                     'type' => 'hidden',
@@ -288,14 +287,14 @@ class AuthController extends Controller
 
                 // Autologin user
                 if (!$needApproval) {
-                    Yii::$app->user->switchIdentity($form->models['User']);
-                    return $this->redirect(Url::to(['/']));
-                }
+                      return $this->render('createAccount_success', array(
+                          'form' => $form,
+                          'needApproval' => $needApproval,
+                      ));
 
-                return $this->render('createAccount_success', array(
-                            'form' => $form,
-                            'needApproval' => $needApproval,
-                ));
+//                    Yii::$app->user->switchIdentity($form->models['User']);
+//                    return $this->redirect(Url::to(['/']));
+                }
             }
         }
 
