@@ -4,6 +4,7 @@ namespace humhub\libs;
 
 use yii\bootstrap\Html;
 use Yii;
+use humhub\models\UrlOembed;
 
 /**
  * HumHub
