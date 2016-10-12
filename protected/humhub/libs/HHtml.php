@@ -211,7 +211,7 @@ class HHtml extends Html
                 }
             }
 
-            return HHtml::link($match[1], $match[1], array('target' => '_blank')) . $match[2];
+            return HHtml::a($match[1], $match[1], array('target' => '_blank')) . $match[2];
         }, $text);
 
         // get user and space details from guids
