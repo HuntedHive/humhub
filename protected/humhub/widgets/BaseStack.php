@@ -70,7 +70,6 @@ class BaseStack extends \yii\base\Widget
      */
     public function init()
     {
-        $this->trigger(self::EVENT_INIT);
         return parent::init();
     }
 
