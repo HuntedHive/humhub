@@ -48,7 +48,6 @@ class BaseMenu extends \yii\base\Widget
             'id' => '',
             'label' => ''
         ));
-//        $this->trigger(self::EVENT_INIT);
         return parent::init();
     }
 

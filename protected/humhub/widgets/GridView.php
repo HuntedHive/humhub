@@ -21,7 +21,6 @@ class GridView extends \yii\grid\GridView
      */
     public function init()
     {
-//        $this->trigger(self::EVENT_INIT);
         parent::init();
     }
 
