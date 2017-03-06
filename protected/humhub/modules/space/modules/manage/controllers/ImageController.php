@@ -10,6 +10,7 @@ namespace humhub\modules\space\modules\manage\controllers;
 
 use Yii;
 use humhub\modules\space\modules\manage\components\Controller;
+use humhub\modules\contrib\spacebanners;
 
 /**
  * ImageControllers handles space profile and banner image
@@ -88,7 +89,8 @@ class ImageController extends Controller
         $model->image = $file;
 
         if ($model->validate()) {
-            $profileImage = new \humhub\libs\ProfileBannerImage($this->getSpace()->guid);
+
+            $profileImage = new spacebanners\models\CustomBannerImage($this->getSpace()->guid);
             $profileImage->setNew($model->image);
 
             $json['error'] = false;
@@ -112,7 +114,7 @@ class ImageController extends Controller
     {
         $space = $this->getSpace();
         $model = new \humhub\models\forms\CropProfileImage();
-        $profileImage = new \humhub\libs\ProfileBannerImage($space->guid);
+        $profileImage = new spacebanners\models\CustomBannerImage($this->getSpace()->guid);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $profileImage->cropOriginal($model->cropX, $model->cropY, $model->cropH, $model->cropW);
