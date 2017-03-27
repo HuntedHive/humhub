@@ -27,14 +27,7 @@ AppAsset::register($this);
         <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
         <script src="<?php echo Yii::getAlias(" @web"); ?>/js/html5shiv.js"></script>
-        <
-        link
-        id = "ie-style"
-        href = "<?php echo Yii::getAlias("
-        @
-        web
-        "); ?>/css/ie.css"
-        rel = "stylesheet" >
+        <link id = "ie-style href = "<?php echo Yii::getAlias("@web"); ?>/css/ie.css" rel = "stylesheet" >
         <![endif]-->
 
         <!--[if IE 9]>
@@ -45,34 +38,25 @@ AppAsset::register($this);
         <?php echo $this->render('head'); ?>
         <!-- end: render additional head -->
 
-
         <!-- start: Favicon and Touch Icons -->
-        <link rel="apple-touch-icon" sizes="57x57" href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-57x57.png">
-        <link rel="apple-touch-icon" sizes="60x60" href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-60x60.png">
-        <link rel="apple-touch-icon" sizes="72x72"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-72x72.png">
-        <link rel="apple-touch-icon" sizes="76x76" href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-76x76.png">
-        <link rel="apple-touch-icon" sizes="114x114"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-114x114.png">
-        <link rel="apple-touch-icon" sizes="120x120"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-120x120.png">
-        <link rel="apple-touch-icon" sizes="144x144"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-144x144.png">
-        <link rel="apple-touch-icon" sizes="152x152"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-152x152.png">
-        <link rel="apple-touch-icon" sizes="180x180"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/apple-icon-180x180.png">
-        <link rel="icon" type="image/png" sizes="192x192"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/android-icon-192x192.png">
-        <link rel="icon" type="image/png" sizes="32x32"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="96x96"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/favicon-96x96.png">
-        <link rel="icon" type="image/png" sizes="16x16"
-              href="<?php echo Yii::getAlias("@web"); ?>/ico/favicon-16x16.png">
-        <link rel="manifest" href="/manifest.json">
-        <meta name="msapplication-TileColor" content="#ffffff">
-        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="57x57" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-57x57.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="60x60" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-60x60.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="72x72" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-72x72.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="76x76" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-76x76.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="114x114" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-114x114.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="120x120" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-120x120.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="144x144" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-144x144.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="152x152" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-152x152.png?v=47rn3AYd0y">
+        <link rel="apple-touch-icon" sizes="180x180" href=""<?php echo Yii::getAlias("@web"); ?>/ico/apple-touch-icon-180x180.png?v=47rn3AYd0y">
+        <link rel="icon" type="image/png" href=""<?php echo Yii::getAlias("@web"); ?>/ico/favicon-32x32.png?v=47rn3AYd0y" sizes="32x32">
+        <link rel="icon" type="image/png" href=""<?php echo Yii::getAlias("@web"); ?>/ico/android-chrome-192x192.png?v=47rn3AYd0y" sizes="192x192">
+        <link rel="icon" type="image/png" href=""<?php echo Yii::getAlias("@web"); ?>/ico/favicon-16x16.png?v=47rn3AYd0y" sizes="16x16">
+        <link rel="manifest" href=""<?php echo Yii::getAlias("@web"); ?>/ico/manifest.json?v=47rn3AYd0y">
+        <link rel="mask-icon" href=""<?php echo Yii::getAlias("@web"); ?>/ico/safari-pinned-tab.svg?v=47rn3AYd0y" color="#5bbad5">
+        <link rel="shortcut icon" href=""<?php echo Yii::getAlias("@web"); ?>/ico/favicon.ico?v=47rn3AYd0y">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="msapplication-TileImage" content=""<?php echo Yii::getAlias("@web"); ?>/ico/mstile-144x144.png?v=47rn3AYd0y">
+        <meta name="msapplication-config" content=""<?php echo Yii::getAlias("@web"); ?>/ico/browserconfig.xml?v=47rn3AYd0y">
         <meta name="theme-color" content="#ffffff">
         <meta charset="<?= Yii::$app->charset ?>">
         <!-- end: Favicon and Touch Icons -->
