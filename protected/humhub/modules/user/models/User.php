@@ -13,6 +13,7 @@ use yii\base\Exception;
 use humhub\modules\content\components\ContentContainerActiveRecord;
 use humhub\modules\user\models\GroupAdmin;
 use humhub\modules\user\components\ActiveQueryUser;
+use yii\db\IntegrityException;
 
 /**
  * This is the model class for table "user".
@@ -67,6 +68,8 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
      */
     const VISIBILITY_REGISTERED_ONLY = 1; // Only for registered members
     const VISIBILITY_ALL = 2; // Visible for all (also guests)
+
+    private $_userRegistrationDetails = null;
 
     /**
      * @inheritdoc
@@ -173,11 +176,103 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
     {
         return static::findOne(['guid' => $token]);
     }
-    
+
+    public function getDetails()
+    {
+        return $this->hasMany(UserRegistrationDetail::className(), ['id' => 'user_registration_details_id'])
+            ->viaTable('user_profile_details', ['user_id' => 'id']);
+    }
+
+    private function _getURDByType($type)
+    {
+        $r = $this->getDetails()->where(['type' => $type])->all();
+        $result = [];
+        foreach ($r as $detail) {
+            $result[] = [$detail->name, $detail->is_other];
+        }
+        return $result;
+    }
+
+    public function getTeacherLevels()
+    {
+        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_LEVEL);
+    }
+
+    public function getTeacherTypes()
+    {
+        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_TYPE);
+    }
+
+    public function getTeacherSubjectAreas()
+    {
+        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_SUBJECT_AREA);
+    }
+
+    public function getTeacherInterests()
+    {
+        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_INTEREST);
+    }
+
+    private function _setURD($type, $name, $is_other)
+    {
+        if (is_null($this->_userRegistrationDetails)) {
+            $this->_userRegistrationDetails = [];
+        }
+        $key = "$type::$name";
+        $this->_userRegistrationDetails[$key] = [
+            'type' => $type,
+            'name' => $name,
+            'is_other' => $is_other
+        ];
+    }
+
+    public function setTeacherLevel($level, $is_other)
+    {
+        $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_LEVEL, $level, $is_other);
+    }
+
+    public function setTeacherType($type, $is_other)
+    {
+        $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_TYPE, $type, $is_other);
+    }
+
+    public function setTeacherSubjectAreas($areas)
+    {
+        foreach ($areas as $area) {
+            $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_SUBJECT_AREA, $area['name'], $area['is_other']);
+        }
+    }
+
+    public function setTeacherInterests($interests)
+    {
+        foreach ($interests as $interest) {
+            $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_INTEREST, $interest['name'], $interest['is_other']);
+        }
+    }
+
+    private function _saveRegistrationDetails()
+    {
+        if (is_null($this->_userRegistrationDetails)) {
+            return;
+        }
+        foreach($this->_userRegistrationDetails as $urd) {
+            $detail = new UserRegistrationDetail();
+            $detail->name = $urd['name'];
+            $detail->type = $urd['type'];
+            $detail->is_other = $urd['is_other'];
+            try {
+                $detail->save();
+            }
+            catch (IntegrityException $e) {
+                $detail = UserRegistrationDetail::findOne($urd);
+            }
+            $this->link('user_registration_details', $detail);
+        }
+    }
 
     /**
      * @inheritdoc
-     * 
+     *
      * @return ActiveQueryContent
      */
     public static function find()
@@ -214,7 +309,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
     {
         return $this->hasOne(Group::className(), ['id' => 'group_id']);
     }
-    
+
     public function isActive()
     {
         return $this->status === User::STATUS_ENABLED;
@@ -332,6 +427,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         if (Yii::$app->user->id == $this->id) {
             Yii::$app->user->setIdentity($this);
         }
+        $this->_saveRegistrationDetails();
         return parent::afterSave($insert, $changedAttributes);
     }
 
@@ -415,7 +511,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
 
     /**
      * Checks if user has tags
-     * 
+     *
      * @return boolean has tags set
      */
     public function hasTags()
@@ -425,7 +521,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
 
     /**
      * Returns an array with assigned Tags
-     * 
+     *
      * @return array tags
      */
     public function getTags()

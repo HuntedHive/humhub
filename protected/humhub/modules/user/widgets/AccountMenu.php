@@ -45,6 +45,16 @@ class AccountMenu extends BaseMenu
         ));
 
         $this->addItem(array(
+            'label' => Yii::t('UserModule.widgets_AccountMenuWidget', 'Teacher Information'),
+            'icon' => '<i class="fa fa-book"></i>',
+            'group' => 'account',
+            'url' => Url::toRoute('/user/account/edit-information'),
+            'sortOrder' => 105,
+            'isActive' => (Yii::$app->controller->action->id == "edit-information"),
+        ));
+
+
+        $this->addItem(array(
             'label' => Yii::t('UserModule.widgets_AccountMenuWidget', 'Settings'),
             'icon' => '<i class="fa fa-wrench"></i>',
             'group' => 'account',

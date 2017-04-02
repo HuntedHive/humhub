@@ -10,6 +10,7 @@ namespace humhub\modules\user\controllers;
 
 use Yii;
 use \humhub\components\Controller;
+use yii\base\Exception;
 use \yii\helpers\Url;
 use \yii\web\HttpException;
 use \humhub\modules\user\models\User;
@@ -71,6 +72,35 @@ class AccountController extends Controller
         return $this->render('edit', array('hForm' => $form));
     }
 
+    public function actionEditInformation()
+    {
+
+        $user = Yii::$app->user->getIdentity();
+
+        // Get Form Definition
+        $definition = $user->profile->getFormDefinition();
+
+        $definition['buttons'] = array(
+            'save' => array(
+                'type' => 'submit',
+                'label' => Yii::t('UserModule.controllers_AccountController', 'Save profile'),
+                'class' => 'btn btn-primary'
+            ),
+        );
+
+        $form = new \humhub\compat\HForm($definition, $user->profile);
+        $form->showErrorSummary = true;
+        if ($form->submitted('update') && $form->validate() && $form->save()) {
+
+            // Trigger search refresh
+            $user->save();
+
+            Yii::$app->getSession()->setFlash('data-saved', Yii::t('UserModule.controllers_AccountController', 'Saved'));
+            return $this->redirect(Url::to(['edit']));
+        }
+
+        return $this->render('editInformation', array('hForm' => $form));
+    }
     /**
      * Change Account
      *
@@ -415,10 +445,10 @@ class AccountController extends Controller
 
     /**
      * Returns the current user of this account
-     * 
+     *
      * An administration can also pass a user id via GET parameter to change users
      * accounts settings.
-     * 
+     *
      * @return User the user
      */
     public function getUser()
