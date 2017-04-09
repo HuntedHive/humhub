@@ -347,7 +347,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         if (Yii::$app->user->id == $this->id) {
             Yii::$app->user->setIdentity($this);
         }
-        $this->teacher_information->save();
+
         return parent::afterSave($insert, $changedAttributes);
     }
 
