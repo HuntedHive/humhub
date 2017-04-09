@@ -182,9 +182,14 @@ class TeacherInformation extends ActiveRecord
 
     private function getPredefinedDetails($type)
     {
-        $records = ManageRegistration::findAll([
-            'type' => $type
-        ]);
+        $records = ManageRegistration::find([
+        ])->leftJoin('user', 'user.id = manage_registration.created_by')->where([
+            'type' => $type,
+            'manage_registration.created_by' => $this->user_id
+        ])->orWhere([
+            'type' => $type,
+            'user.super_admin' => 1
+        ])->all();
         $result = [];
         foreach($records as $r) {
             $result[] = $r->name;
