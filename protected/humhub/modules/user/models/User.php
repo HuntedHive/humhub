@@ -38,6 +38,7 @@ use yii\db\IntegrityException;
  * @property string $last_login
  * @property integer $visibility
  * @property integer $contentcontainer_id
+ * @property TeacherInformation $teacherInformation
  */
 class User extends ContentContainerActiveRecord implements \yii\web\IdentityInterface, \humhub\modules\search\interfaces\Searchable
 {
@@ -177,97 +178,16 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         return static::findOne(['guid' => $token]);
     }
 
-    public function getDetails()
+    public function getTeacherInformation()
     {
-        return $this->hasMany(UserRegistrationDetail::className(), ['id' => 'user_registration_details_id'])
-            ->viaTable('user_profile_details', ['user_id' => 'id']);
-    }
-
-    private function _getURDByType($type)
-    {
-        $r = $this->getDetails()->where(['type' => $type])->all();
-        $result = [];
-        foreach ($r as $detail) {
-            $result[] = [$detail->name, $detail->is_other];
+        $result = $this->hasOne(TeacherInformation::className(), ['user_id' => 'id']);
+        if (!$result->count()) {
+            $ti = new TeacherInformation();
+            $ti->user_id = $this->id;
+            $ti->type = $this->profile->teacher_type;
+            $ti->save();
         }
         return $result;
-    }
-
-    public function getTeacherLevels()
-    {
-        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_LEVEL);
-    }
-
-    public function getTeacherTypes()
-    {
-        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_TYPE);
-    }
-
-    public function getTeacherSubjectAreas()
-    {
-        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_SUBJECT_AREA);
-    }
-
-    public function getTeacherInterests()
-    {
-        return $this->_getURDByType(UserRegistrationDetail::TYPE_TEACHER_INTEREST);
-    }
-
-    private function _setURD($type, $name, $is_other)
-    {
-        if (is_null($this->_userRegistrationDetails)) {
-            $this->_userRegistrationDetails = [];
-        }
-        $key = "$type::$name";
-        $this->_userRegistrationDetails[$key] = [
-            'type' => $type,
-            'name' => $name,
-            'is_other' => $is_other
-        ];
-    }
-
-    public function setTeacherLevel($level, $is_other)
-    {
-        $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_LEVEL, $level, $is_other);
-    }
-
-    public function setTeacherType($type, $is_other)
-    {
-        $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_TYPE, $type, $is_other);
-    }
-
-    public function setTeacherSubjectAreas($areas)
-    {
-        foreach ($areas as $area) {
-            $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_SUBJECT_AREA, $area['name'], $area['is_other']);
-        }
-    }
-
-    public function setTeacherInterests($interests)
-    {
-        foreach ($interests as $interest) {
-            $this->_setURD(UserRegistrationDetail::TYPE_TEACHER_INTEREST, $interest['name'], $interest['is_other']);
-        }
-    }
-
-    private function _saveRegistrationDetails()
-    {
-        if (is_null($this->_userRegistrationDetails)) {
-            return;
-        }
-        foreach($this->_userRegistrationDetails as $urd) {
-            $detail = new UserRegistrationDetail();
-            $detail->name = $urd['name'];
-            $detail->type = $urd['type'];
-            $detail->is_other = $urd['is_other'];
-            try {
-                $detail->save();
-            }
-            catch (IntegrityException $e) {
-                $detail = UserRegistrationDetail::findOne($urd);
-            }
-            $this->link('user_registration_details', $detail);
-        }
     }
 
     /**
@@ -427,7 +347,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         if (Yii::$app->user->id == $this->id) {
             Yii::$app->user->setIdentity($this);
         }
-        $this->_saveRegistrationDetails();
+        $this->teacher_information->save();
         return parent::afterSave($insert, $changedAttributes);
     }
 

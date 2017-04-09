@@ -18,6 +18,9 @@
                                          data-toggle="tab"><?php echo Html::encode(Yii::t($category->getTranslationCategory(), $category->title)); ?></a>
                 </li>
             <?php endforeach; ?>
+            <li class=""><a href="#profile-category-teacher-information"
+                                     data-toggle="tab">Teacher Information</a>
+            </li>
         </ul>
 
         <?php $firstClass = "active"; ?>
@@ -51,6 +54,38 @@
                     </form>
                 </div>
             <?php endforeach; ?>
+            <div class="tab-pane" id="profile-category-teacher-information">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group row">
+                        <label
+                            class="col-sm-3 control-label">Teacher level</label>
+                            <div class="col-sm-9">
+                                <p class="form-control-static"><?php echo htmlspecialchars($user->teacherInformation->level)?></p>
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label
+                            class="col-sm-3 control-label">Teacher type</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-static"><?php echo htmlspecialchars($user->teacherInformation->type)?></p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label
+                            class="col-sm-3 control-label">Subject area(s)</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-static"><?php echo htmlspecialchars(join(', ', $user->teacherInformation->subjectAreasArray))?></p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label
+                            class="col-sm-3 control-label">Teaching interests</label>
+                        <div class="col-sm-9">
+                            <p class="form-control-static"><?php echo htmlspecialchars(join(', ', $user->teacherInformation->interestsArray))?></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>

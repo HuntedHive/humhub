@@ -8,6 +8,8 @@
 
 namespace humhub\modules\user\controllers;
 
+use humhub\modules\user\models\TeacherInformation;
+use humhub\modules\user\models\UserRegistrationDetail;
 use Yii;
 use \humhub\components\Controller;
 use yii\base\Exception;
@@ -77,29 +79,50 @@ class AccountController extends Controller
 
         $user = Yii::$app->user->getIdentity();
 
-        // Get Form Definition
-        $definition = $user->profile->getFormDefinition();
+        $model = $user->teacherInformation;
+        /* @var TeacherInformation $model */
 
-        $definition['buttons'] = array(
-            'save' => array(
-                'type' => 'submit',
-                'label' => Yii::t('UserModule.controllers_AccountController', 'Save profile'),
-                'class' => 'btn btn-primary'
-            ),
-        );
+        $doSave = false;
 
-        $form = new \humhub\compat\HForm($definition, $user->profile);
-        $form->showErrorSummary = true;
-        if ($form->submitted('update') && $form->validate() && $form->save()) {
+        if (Yii::$app->request->isPost) {
+            $pa = Yii::$app->request->post();
+            $doSave = true;
 
-            // Trigger search refresh
-            $user->save();
+            if (!$pa['type'] || ($pa['type'] == '__other__' && !$pa['type_other'])) {
+                $model->addError('type', 'Teacher type is required and cannot be empty');
+                $doSave = false;
+            }
 
-            Yii::$app->getSession()->setFlash('data-saved', Yii::t('UserModule.controllers_AccountController', 'Saved'));
-            return $this->redirect(Url::to(['edit']));
+            if (!$pa['level'] || ($pa['level'] == '__other__' && !$pa['level_other'])) {
+                $model->addError('level', 'Teacher level is required and cannot be empty');
+                $doSave = false;
+            }
+
+            if ($pa['subject_areas'] === '') {
+                $pa['subject_areas'] = [];
+            } else if (!is_array($pa['subject_areas'])) {
+                $pa['subject_areas'] = [$pa['subject_areas']];
+            }
+
+            if ($pa['interests'] === '') {
+                $pa['interests'] = [];
+            } else if (!is_array($pa['interests'])) {
+                $pa['interests'] = [$pa['interests']];
+            }
+
+            $model->level = ($pa['level'] == '__other__') ? $pa['level_other'] : $pa['level'];
+            $model->type = ($pa['type'] == '__other__') ? $pa['type_other'] : $pa['type'];
+            $model->setSubjectAreasArray($pa['subject_areas'], $pa['subject_area_other']);
+            $model->setInterestsArray($pa['interests'], $pa['interests_other']);
         }
 
-        return $this->render('editInformation', array('hForm' => $form));
+        if ($doSave) {
+            $model->save();
+            Yii::$app->getSession()->setFlash('data-saved', Yii::t('UserModule.controllers_AccountController', 'Saved'));
+            return $this->redirect(Url::to(['edit-information']));
+        }
+
+        return $this->render('editInformation', array('user' => $user, 'teacherInformation' => $model));
     }
     /**
      * Change Account
