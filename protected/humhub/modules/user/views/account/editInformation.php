@@ -1,12 +1,7 @@
 <?php
 
-use yii\widgets\ActiveForm;
-use humhub\compat\CHtml;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use humhub\modules\logicenter\models\LogicEntry;
-use humhub\modules\registration\models\ManageRegistration;
-use humhub\modules\user\models\UserRegistrationDetail;
 ?>
 <div class="panel-heading">
     <?php echo Yii::t('UserModule.views_account_editInformation', '<strong>Teacher</strong> information'); ?>
@@ -37,7 +32,6 @@ use humhub\modules\user\models\UserRegistrationDetail;
                     $teacherInformation->getLevelDropdown(),
                     [
                         'class' => 'manage_reg selectpicker form-control show-tick',
-                        'data-type' => UserRegistrationDetail::TYPE_TEACHER_LEVEL,
                         'name' => 'level',
                         'id' => 'teacher_level',
                         "title" => "Select teacher level...",
@@ -129,7 +123,6 @@ use humhub\modules\user\models\UserRegistrationDetail;
                 $teacherInformation->getInterestsDropdown(),
                 [
                 'class' => 'manage_reg teacher_interest selectpicker form-control show-tick',
-                'data-type' => UserRegistrationDetail::TYPE_TEACHER_INTEREST,
                 'multiple title' => "Select teaching interests...",
                     'multiple'=>'multiple',
                 'name' => 'interests',
