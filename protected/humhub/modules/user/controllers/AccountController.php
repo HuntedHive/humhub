@@ -8,8 +8,11 @@
 
 namespace humhub\modules\user\controllers;
 
+use humhub\modules\user\models\TeacherInformation;
+use humhub\modules\user\models\UserRegistrationDetail;
 use Yii;
 use \humhub\components\Controller;
+use yii\base\Exception;
 use \yii\helpers\Url;
 use \yii\web\HttpException;
 use \humhub\modules\user\models\User;
@@ -71,6 +74,56 @@ class AccountController extends Controller
         return $this->render('edit', array('hForm' => $form));
     }
 
+    public function actionEditInformation()
+    {
+
+        $user = Yii::$app->user->getIdentity();
+
+        $model = $user->teacherInformation;
+        /* @var TeacherInformation $model */
+
+        $doSave = false;
+
+        if (Yii::$app->request->isPost) {
+            $pa = Yii::$app->request->post();
+            $doSave = true;
+
+            if (!$pa['type'] || ($pa['type'] == '__other__' && !$pa['type_other'])) {
+                $model->addError('type', 'Teacher type is required and cannot be empty');
+                $doSave = false;
+            }
+
+            if (!$pa['level'] || ($pa['level'] == '__other__' && !$pa['level_other'])) {
+                $model->addError('level', 'Teacher level is required and cannot be empty');
+                $doSave = false;
+            }
+
+            if ($pa['subject_areas'] === '') {
+                $pa['subject_areas'] = [];
+            } else if (!is_array($pa['subject_areas'])) {
+                $pa['subject_areas'] = [$pa['subject_areas']];
+            }
+
+            if ($pa['interests'] === '') {
+                $pa['interests'] = [];
+            } else if (!is_array($pa['interests'])) {
+                $pa['interests'] = [$pa['interests']];
+            }
+
+            $model->level = ($pa['level'] == '__other__') ? $pa['level_other'] : $pa['level'];
+            $model->type = ($pa['type'] == '__other__') ? $pa['type_other'] : $pa['type'];
+            $model->setSubjectAreasArray($pa['subject_areas'], $pa['subject_area_other']);
+            $model->setInterestsArray($pa['interests'], $pa['interests_other']);
+        }
+
+        if ($doSave) {
+            $model->save();
+            Yii::$app->getSession()->setFlash('data-saved', Yii::t('UserModule.controllers_AccountController', 'Saved'));
+            return $this->redirect(Url::to(['edit-information']));
+        }
+
+        return $this->render('editInformation', array('user' => $user, 'teacherInformation' => $model));
+    }
     /**
      * Change Account
      *
@@ -415,10 +468,10 @@ class AccountController extends Controller
 
     /**
      * Returns the current user of this account
-     * 
+     *
      * An administration can also pass a user id via GET parameter to change users
      * accounts settings.
-     * 
+     *
      * @return User the user
      */
     public function getUser()

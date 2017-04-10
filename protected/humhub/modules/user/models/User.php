@@ -13,6 +13,7 @@ use yii\base\Exception;
 use humhub\modules\content\components\ContentContainerActiveRecord;
 use humhub\modules\user\models\GroupAdmin;
 use humhub\modules\user\components\ActiveQueryUser;
+use yii\db\IntegrityException;
 
 /**
  * This is the model class for table "user".
@@ -37,6 +38,7 @@ use humhub\modules\user\components\ActiveQueryUser;
  * @property string $last_login
  * @property integer $visibility
  * @property integer $contentcontainer_id
+ * @property TeacherInformation $teacherInformation
  */
 class User extends ContentContainerActiveRecord implements \yii\web\IdentityInterface, \humhub\modules\search\interfaces\Searchable
 {
@@ -67,6 +69,8 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
      */
     const VISIBILITY_REGISTERED_ONLY = 1; // Only for registered members
     const VISIBILITY_ALL = 2; // Visible for all (also guests)
+
+    private $_userRegistrationDetails = null;
 
     /**
      * @inheritdoc
@@ -173,11 +177,22 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
     {
         return static::findOne(['guid' => $token]);
     }
-    
+
+    public function getTeacherInformation()
+    {
+        $result = $this->hasOne(TeacherInformation::className(), ['user_id' => 'id']);
+        if (!$result->count()) {
+            $ti = new TeacherInformation();
+            $ti->user_id = $this->id;
+            $ti->type = $this->profile->teacher_type;
+            $ti->save();
+        }
+        return $result;
+    }
 
     /**
      * @inheritdoc
-     * 
+     *
      * @return ActiveQueryContent
      */
     public static function find()
@@ -214,7 +229,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
     {
         return $this->hasOne(Group::className(), ['id' => 'group_id']);
     }
-    
+
     public function isActive()
     {
         return $this->status === User::STATUS_ENABLED;
@@ -332,6 +347,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         if (Yii::$app->user->id == $this->id) {
             Yii::$app->user->setIdentity($this);
         }
+
         return parent::afterSave($insert, $changedAttributes);
     }
 
@@ -415,7 +431,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
 
     /**
      * Checks if user has tags
-     * 
+     *
      * @return boolean has tags set
      */
     public function hasTags()
@@ -425,7 +441,7 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
 
     /**
      * Returns an array with assigned Tags
-     * 
+     *
      * @return array tags
      */
     public function getTags()
