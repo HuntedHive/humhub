@@ -70,10 +70,10 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
     {
         $rules = [
             [['join_policy', 'visibility', 'status', 'created_by', 'updated_by', 'auto_add_new_members', 'default_content_visibility'], 'integer'],
-            
+
             [['name'], 'required'],
             [['description', 'tags', 'color'], 'string'],
-            [['name', 'description'], 'string', 'max' => 255],
+            [['name', 'description'], 'string', 'max' => 15000],
             [['created_at', 'updated_at'], 'safe'],
             [['join_policy'], 'in', 'range' => [0, 1, 2]],
             [['visibility'], 'in', 'range' => [0, 1, 2]],
@@ -81,7 +81,7 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
             [['guid', 'name', 'website'], 'string', 'max' => 45],
             [['website'], 'url'],
         ];
-        
+
         if(Yii::$app->getModule('space')->useUniqueSpaceNames) {
             $rules[] = [['name'], 'unique', 'targetClass' => self::className()];
         }
@@ -338,7 +338,7 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
 
     /**
      * Checks if space has tags
-     * 
+     *
      * @return boolean has tags set
      */
     public function hasTags()
@@ -443,7 +443,7 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
         if (Yii::$app->getModule('space')->globalAdminCanAccessPrivateContent && Yii::$app->user->getIdentity()->super_admin === 1) {
             return true;
         }
-        
+
         return ($this->isMember());
     }
 
