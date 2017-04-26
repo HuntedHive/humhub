@@ -20,7 +20,7 @@ $this->registerCssFile('@web/resources/space/colorpicker/css/bootstrap-colorpick
             <hr>
             <br>
             <div class="row">
-                <div class="col-md-8"> <?php echo $form->field($model, 'name')->textInput(['id' => 'space-name', 'placeholder' => Yii::t('SpaceModule.views_create_create', 'space name'), 'maxlength' => 45]); ?></div>
+                <div class="col-md-8"> <?php echo $form->field($model, 'name')->textInput(['id' => 'space-name', 'placeholder' => Yii::t('SpaceModule.views_create_create', 'space name'), 'maxlength' => 60]); ?></div>
                 <div class="col-md-4">            <strong><?php echo Yii::t('SpaceModule.views_create_create', 'Color'); ?></strong>
 
                     <div class="input-group space-color-chooser" style="margin-top: 5px;">
