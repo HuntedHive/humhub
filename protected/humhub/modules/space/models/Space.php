@@ -78,7 +78,7 @@ class Space extends ContentContainerActiveRecord implements \humhub\modules\sear
             [['join_policy'], 'in', 'range' => [0, 1, 2]],
             [['visibility'], 'in', 'range' => [0, 1, 2]],
             [['visibility'], 'checkVisibility'],
-            [['guid', 'name', 'website'], 'string', 'max' => 45],
+            [['guid', 'name', 'website'], 'string', 'max' => 60],
             [['website'], 'url'],
         ];
 
