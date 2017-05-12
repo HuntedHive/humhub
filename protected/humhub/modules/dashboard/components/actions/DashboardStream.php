@@ -51,43 +51,6 @@ class DashboardStream extends \humhub\modules\content\components\actions\Teachco
         } else {
 
             /**
-             * Collect all wall_ids we need to include into dashboard stream
-             */
-            // User to user follows
-            $userFollow = (new \yii\db\Query())
-                    ->select(["uf.wall_id"])
-                    ->from('user_follow')
-                    ->leftJoin('user uf', 'uf.id=user_follow.object_id AND user_follow.object_model=:userClass')
-                    ->where('user_follow.user_id=' . $this->user->id . ' AND uf.wall_id IS NOT NULL');
-            $union = Yii::$app->db->getQueryBuilder()->build($userFollow)[0];
-
-            // User to space follows
-            $spaceFollow = (new \yii\db\Query())
-                    ->select("sf.wall_id")
-                    ->from('user_follow')
-                    ->leftJoin('space sf', 'sf.id=user_follow.object_id AND user_follow.object_model=:spaceClass')
-                    ->where('user_follow.user_id=' . $this->user->id . ' AND sf.wall_id IS NOT NULL');
-            $union .= " UNION " . Yii::$app->db->getQueryBuilder()->build($spaceFollow)[0];
-
-            // User to space memberships
-            $spaceMemberships = (new \yii\db\Query())
-                    ->select("sm.wall_id")
-                    ->from('space_membership')
-                    ->leftJoin('space sm', 'sm.id=space_membership.space_id')
-                    ->where('space_membership.user_id=' . $this->user->id . ' AND sm.wall_id IS NOT NULL AND space_membership.show_at_dashboard = 1');
-            $union .= " UNION " . Yii::$app->db->getQueryBuilder()->build($spaceMemberships)[0];
-
-            // Glue together also with current users wall
-            $wallIdsSql = (new \yii\db\Query())
-                    ->select('wall_id')
-                    ->from('user uw')
-                    ->where('uw.id=' . $this->user->id);
-            $union .= " UNION " . Yii::$app->db->getQueryBuilder()->build($wallIdsSql)[0];
-
-            // Manual Union (https://github.com/yiisoft/yii2/issues/7992)
-            $this->activeQuery->andWhere('wall_entry.wall_id IN (' . $union . ')', [':spaceClass' => \humhub\modules\space\models\Space::className(), ':userClass' => \humhub\modules\user\models\User::className()]);
-
-            /**
              * Begin visibility checks regarding the content container
              */
             $this->activeQuery->leftJoin('wall', 'wall_entry.wall_id=wall.id');
