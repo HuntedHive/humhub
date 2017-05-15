@@ -8,6 +8,10 @@
 
 namespace humhub\modules\content\controllers;
 
+use humhub\modules\activity\models\Activity;
+use humhub\modules\questionanswer\models\Answer;
+use humhub\modules\questionanswer\models\QAComment;
+use humhub\modules\questionanswer\models\Question;
 use Yii;
 use humhub\components\Controller;
 use humhub\modules\content\models\WallEntry;
@@ -67,6 +71,23 @@ class PermaController extends Controller
 
         if ($wallEntry != null) {
             $obj = $wallEntry->content; // Type of IContent
+            $maybeActivity = $obj->getPolymorphicRelation();
+            if ($maybeActivity instanceof Activity) {
+                $maybeQuestion = $maybeActivity->getPolymorphicRelation();
+                $question = null;
+                if ($maybeQuestion instanceof Question) {
+                    $question = $maybeQuestion;
+                }
+                else if ($maybeQuestion instanceof Answer) {
+                    $question = Question::find()->where(['id' => $maybeQuestion->question_id])->one();
+                }
+                else if ($maybeQuestion instanceof QAComment) {
+                    $question = Question::find()->where(['id' => $maybeQuestion->question_id])->one();
+                }
+                if ($question) {
+                    return $this->redirect($question->getUrl($question->id));
+                }
+            }
             if ($obj) {
                 return $this->redirect($obj->container->createUrl(null, array('wallEntryId' => $id)));
             }
