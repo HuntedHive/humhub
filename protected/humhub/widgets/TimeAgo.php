@@ -65,7 +65,11 @@ class TimeAgo extends \yii\base\Widget
 
         // Convert timestamp to ISO 8601
         $timezone = empty(Yii::$app->user->identity->time_zone)?Yii::$app->timeZone:Yii::$app->user->identity->time_zone;
-        $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $this->timestamp, new \DateTimeZone('UTC'));
+        if (preg_match('/^\d+$/', $this->timestamp)) {
+            $datetime = new \Datetime("@".$this->timestamp);
+        } else {
+            $datetime = \DateTime::createFromFormat('Y-m-d H:i:s', $this->timestamp, new \DateTimeZone('UTC'));
+        }
         $datetime->setTimezone(new \DateTimeZone($timezone));
         $this->timestamp = $datetime->format('Y-m-d H:i:s');
 
